@@ -120,11 +120,12 @@ private:
 
     void setGrey(PNG & im, pair<int,int> loc);
 
-    bool withinImg(pair<int,int> loc);
-
+    bool withinImg(pair<int,int> loc) const;
+    bool unvisited(vector<vector<bool>> &v, pair<int,int> next) const;
+    bool sameColor(pair<int, int> curr, pair<int, int> next) const;
     // ========= private member variables ================
 
-	pair<int,int> start;  // col,row
+    pair<int,int> start;  // col,row
 	PNG base; // you can assume that these two images have the same dimensions, and that
 	PNG maze; // position i,j in one corresponds to position i,j in the other.
     

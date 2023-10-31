@@ -23,8 +23,38 @@ void treasureMap::setLOB(PNG & im, pair<int,int> loc, int d){
 }
 
 PNG treasureMap::renderMap(){
+    PNG& copy = base;
+    vector<vector<bool>> visited(copy.height(), vector<bool>(copy.width()));
+    vector<vector<int>> dist(copy.height(), vector<int> (copy.width()));
+    Queue<pair<int, int>> queue;
 
-    return PNG();
+    int xPos = start.first;
+    int yPos = start.second;
+
+    visited[yPos][xPos] = true;
+    dist[yPos][xPos] = 0;
+
+    RGBAPixel *pix = copy.getPixel(xPos, yPos);
+    pix->r = 0 >> 6 & 0x3;
+    pix->r = 0 >> 4 & 0x3;
+    pix->r = 0 >> 2 & 0x3;
+    pix->r = 0 >> 0 & 0x3;
+
+    queue.enqueue(start);
+    while(!queue.isEmpty()){
+        auto curr = queue.dequeue();
+        auto adjPixels = neighbors(curr);
+        for(auto p : adjPixels){
+            if(good(visited,curr,p)){
+                visited[p.second][p.first] = true;
+                dist[p.second][p.first] = dist[curr.second][curr.first] + 1;
+                //TODO: encode
+                queue.enqueue(p);
+            }
+        }
+    }
+
+    return copy;
 }
 
 PNG treasureMap::renderMaze(){
@@ -63,27 +93,34 @@ PNG treasureMap::renderMaze(){
 }
 
 bool treasureMap::good(vector<vector<bool>> & v, pair<int,int> curr, pair<int,int> next){
-    auto neighborPixels = neighbors(curr);
-    if (withinImg(next)){
-
-    }
-        return false;
+    return withinImg(next) && unvisited(v, next) && sameColor(curr, next);
 }
 
-bool treasureMap::withinImg(pair<int,int> loc){
+bool treasureMap::withinImg(pair<int,int> loc) const {
     int x = loc.first;
     int y = loc.second;
     return x >= 0 && x <= (int)base.width() && y >= 0 && y <= (int)base.height();
+}
+
+bool treasureMap::unvisited(vector<vector<bool>>& visited, pair<int,int> next) const {
+    return false;
+}
+
+bool treasureMap::sameColor(pair<int,int> curr, pair<int,int> next) const {
+    RGBAPixel *currPix = base.getPixel(curr.first,curr.second);
+    RGBAPixel *nextPix = base.getPixel(next.first,next.second);
+    
+    return *currPix == *nextPix;
 }
 
 vector<pair<int, int>> treasureMap::neighbors(pair<int, int> curr)
 {
 
     vector<pair<int, int>> neighbors;
-    neighbors.push_back(pair<int, int>(curr.first + 1, curr.second));
     neighbors.push_back(pair<int, int>(curr.first - 1, curr.second));
+    neighbors.push_back(pair<int, int>(curr.first, curr.second-1));
+    neighbors.push_back(pair<int, int>(curr.first+1, curr.second));
     neighbors.push_back(pair<int, int>(curr.first, curr.second + 1));
-    neighbors.push_back(pair<int, int>(curr.first, curr.second - 1));
 
     return neighbors;
 }
