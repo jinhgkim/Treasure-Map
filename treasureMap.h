@@ -79,9 +79,6 @@ public:
     // should be at the center of the square.
 	PNG renderMaze();
 
-    unsigned int width = base.width();
-    unsigned int height = base.height();
-
 private:
 
     // tests next, a neighbor (adjacent vertex) of curr to see if it is 
