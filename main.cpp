@@ -31,12 +31,12 @@ int main()
     PNG treasuremaze = M.renderMaze();
 	treasuremaze.writeToFile("images/zdesgreyedmaze.png");
 
-    decoder dec(treasure,start);
-    PNG soln = dec.renderSolution();
-    PNG solnmaze = dec.renderMaze();
+    // decoder dec(treasure,start);
+    // PNG soln = dec.renderSolution();
+    // PNG solnmaze = dec.renderMaze();
 
-    soln.writeToFile("images/zdessoln.png");
-    solnmaze.writeToFile("images/zdessolnmaze.png");
+    // soln.writeToFile("images/zdessoln.png");
+    // solnmaze.writeToFile("images/zdessolnmaze.png");
 
   return 0;
 }

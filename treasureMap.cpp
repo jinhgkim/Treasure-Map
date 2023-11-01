@@ -2,28 +2,28 @@
 #include "queue.h"
 using namespace std;
 
-treasureMap::treasureMap(const PNG & baseim, const PNG & mazeim, pair<int,int> s)
-    : base(baseim), maze(mazeim), start(s) {}
+treasureMap::treasureMap(const PNG & baseim, const PNG & mazeim, pair<int,int> s){
+    base = baseim;
+    start = s;
+    maze = mazeim;
+}
 
 void treasureMap::setGrey(PNG & im, pair<int,int> loc){  
     RGBAPixel* pixel = im.getPixel(loc.first, loc.second);
     pixel->r /= 2;
     pixel->g /= 2;
     pixel->b /= 2;
-    pixel->a /= 2;
 }
 
 void treasureMap::setLOB(PNG & im, pair<int,int> loc, int d){
     RGBAPixel *pixel = im.getPixel(loc.first, loc.second);
-    d %= 256; // 8 bit integer
-    pixel->r = d >> 6 & 0x3;
-    pixel->g = d >> 4 & 0x3;
-    pixel->b = d >> 2 & 0x3;
-    pixel->a = d >> 0 & 0x3;
+    pixel->r = (pixel->r & 0xFC) | ((d % 64) >> 4);
+    pixel->g = (pixel->g & 0xFC) | ((d % 64) >> 2);
+    pixel->b = (pixel->b & 0xFC) | (d % 64);
 }
 
 PNG treasureMap::renderMap(){
-    PNG& copy = base;
+    PNG copy = base;
     vector<vector<bool>> visited(copy.height(), vector<bool>(copy.width()));
     vector<vector<int>> dist(copy.height(), vector<int> (copy.width()));
     Queue<pair<int, int>> queue;
@@ -34,11 +34,7 @@ PNG treasureMap::renderMap(){
     visited[yPos][xPos] = true;
     dist[yPos][xPos] = 0;
 
-    RGBAPixel *pix = copy.getPixel(xPos, yPos);
-    pix->r = 0 >> 6 & 0x3;
-    pix->r = 0 >> 4 & 0x3;
-    pix->r = 0 >> 2 & 0x3;
-    pix->r = 0 >> 0 & 0x3;
+    setLOB(copy, start, 0);
 
     queue.enqueue(start);
     while(!queue.isEmpty()){
@@ -48,7 +44,8 @@ PNG treasureMap::renderMap(){
             if(good(visited,curr,p)){
                 visited[p.second][p.first] = true;
                 dist[p.second][p.first] = dist[curr.second][curr.first] + 1;
-                //TODO: encode
+                setLOB(copy, p, dist[p.second][p.first]);
+                
                 queue.enqueue(p);
             }
         }
@@ -70,9 +67,7 @@ PNG treasureMap::renderMaze(){
         }
     }
     // find path and render maze map
-    vector<vector<bool>> visited;
-    visited.resize(base.height());
-    visited[0].resize(base.width());
+    vector<vector<bool>> visited(maze.height(), vector<bool> (maze.width()));
 
     Queue<pair<int, int>> queue;
     queue.enqueue(start);
@@ -80,13 +75,12 @@ PNG treasureMap::renderMaze(){
     {
         auto curr = queue.dequeue();
         auto adjPixels = neighbors(curr);
-        for (unsigned int i = 0; i < adjPixels.size(); i++)
+        for (auto p : adjPixels)
         {
-            queue.enqueue(adjPixels[i]);
-        }
-        if (good(visited, curr, queue.dequeue()))
-        {
-            setGrey(maze, curr);
+            if(good(visited,curr,p)){
+                setGrey(maze, p);
+                queue.enqueue(p);
+            }
         }
     }
     return maze;
@@ -103,7 +97,7 @@ bool treasureMap::withinImg(pair<int,int> loc) const {
 }
 
 bool treasureMap::unvisited(vector<vector<bool>>& visited, pair<int,int> next) const {
-    return false;
+    return visited[next.second][next.first];
 }
 
 bool treasureMap::sameColor(pair<int,int> curr, pair<int,int> next) const {
