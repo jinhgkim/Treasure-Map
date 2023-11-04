@@ -79,8 +79,9 @@ public:
     // should be at the center of the square.
 	PNG renderMaze();
 
-private:
+    void Debug(PNG &im, pair<int, int> loc, int d);
 
+private:
     // tests next, a neighbor (adjacent vertex) of curr to see if it is 
     // 1. within the image, 2. unvisited, and 3. the same colour as curr in
     // the maze image (member var).  An entry in table v is true if a cell 
@@ -121,7 +122,7 @@ private:
     void setGrey(PNG & im, pair<int,int> loc);
 
     bool withinImg(pair<int,int> loc) const;
-    bool unvisited(vector<vector<bool>> &v, pair<int,int> next) const;
+    bool visited(vector<vector<bool>> &v, pair<int,int> next) const;
     bool sameColor(pair<int, int> curr, pair<int, int> next) const;
     // ========= private member variables ================
 
