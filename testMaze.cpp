@@ -51,19 +51,19 @@ TEST_CASE("treasureMap::basic no cycles", "[weight=1][part=treasureMap]")
 	treasuremazeans.readFromFile("images/greyedsnake.png");
     REQUIRE( treasuremaze == treasuremazeans );
 
-    // decoder dec(treasure,start);
+    decoder dec(treasure,start);
 
-    // PNG soln = dec.renderSolution();
-    // //soln.writeToFile("images/solnsnake.png");
-    // PNG solnans;
-    // solnans.readFromFile("images/solnsnake.png");
-    // REQUIRE( soln == solnans );
+    PNG soln = dec.renderSolution();
+    //soln.writeToFile("images/solnsnake.png");
+    PNG solnans;
+    solnans.readFromFile("images/solnsnake.png");
+    REQUIRE( soln == solnans );
 
-    // PNG solnmaze = dec.renderMaze();
-    // //solnmaze.writeToFile("images/solnsnakemaze.png");
-    // PNG solnmazeans;
-    // solnmazeans.readFromFile("images/solnsnakemaze.png");
-    // REQUIRE( solnmaze == solnmazeans );
+    PNG solnmaze = dec.renderMaze();
+    //solnmaze.writeToFile("images/solnsnakemaze.png");
+    PNG solnmazeans;
+    solnmazeans.readFromFile("images/solnsnakemaze.png");
+    REQUIRE( solnmaze == solnmazeans );
 
 }
 
@@ -90,19 +90,19 @@ TEST_CASE("decoder::basic cycles", "[weight=1][part=decoder]")
 	treasuremazeans.readFromFile("images/greyedmaze.png");
     REQUIRE( treasuremaze == treasuremazeans );
 
-    // decoder dec(treasure,start);
+    decoder dec(treasure,start);
 
-    // PNG soln = dec.renderSolution();
-    // //soln.writeToFile("images/solnmaze.png");
-    // PNG solnans;
-    // solnans.readFromFile("images/solnmaze.png");
-    // REQUIRE( soln == solnans );
+    PNG soln = dec.renderSolution();
+    //soln.writeToFile("images/solnmaze.png");
+    PNG solnans;
+    solnans.readFromFile("images/solnmaze.png");
+    REQUIRE( soln == solnans );
 
-    // PNG solnmaze = dec.renderMaze();
-    // //solnmaze.writeToFile("images/solnmazemaze.png");
-    // PNG solnmazeans;
-    // solnmazeans.readFromFile("images/solnmazemaze.png");
-    // REQUIRE( solnmaze == solnmazeans );
+    PNG solnmaze = dec.renderMaze();
+    //solnmaze.writeToFile("images/solnmazemaze.png");
+    PNG solnmazeans;
+    solnmazeans.readFromFile("images/solnmazemaze.png");
+    REQUIRE( solnmaze == solnmazeans );
 
 }
 

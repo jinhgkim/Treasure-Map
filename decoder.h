@@ -95,13 +95,15 @@ private:
     // x is the value of a colour channel.
     void setGrey(PNG & im, pair<int,int> loc);
 
+    bool withinImg(pair<int, int> loc) const;
+    bool visited(vector<vector<bool>> &v, pair<int, int> next) const;
+    bool goodColor() const;
 
-// ========= private member variables ================
+    // ========= private member variables ================
 
 	pair<int,int> start;  // col,row
 	PNG mapImg; // this image has a maze encoded in it 
     vector<pair<int,int>> pathPts; // vector of points on the solution path
-
 };
 
 #endif
