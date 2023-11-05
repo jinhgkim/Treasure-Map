@@ -45,11 +45,11 @@ TEST_CASE("treasureMap::basic no cycles", "[weight=1][part=treasureMap]")
 
     REQUIRE(treasure == treasureans);
 
-    // PNG treasuremaze = M.renderMaze();
-	// // treasuremaze.writeToFile("images/greyedsnake.png");
-    // PNG treasuremazeans;
-	// treasuremazeans.readFromFile("images/greyedsnake.png");
-    // REQUIRE( treasuremaze == treasuremazeans );
+    PNG treasuremaze = M.renderMaze();
+	// treasuremaze.writeToFile("images/greyedsnake.png");
+    PNG treasuremazeans;
+	treasuremazeans.readFromFile("images/greyedsnake.png");
+    REQUIRE( treasuremaze == treasuremazeans );
 
     // decoder dec(treasure,start);
 
@@ -84,11 +84,11 @@ TEST_CASE("decoder::basic cycles", "[weight=1][part=decoder]")
     treasureans.readFromFile("images/embeddedmaze.png");
     REQUIRE( treasure == treasureans );
 
-    // PNG treasuremaze = M.renderMaze();
-	// //treasuremaze.writeToFile("images/greyedmaze.png");
-    // PNG treasuremazeans;
-	// treasuremazeans.readFromFile("images/greyedmaze.png");
-    // REQUIRE( treasuremaze == treasuremazeans );
+    PNG treasuremaze = M.renderMaze();
+	//treasuremaze.writeToFile("images/greyedmaze.png");
+    PNG treasuremazeans;
+	treasuremazeans.readFromFile("images/greyedmaze.png");
+    REQUIRE( treasuremaze == treasuremazeans );
 
     // decoder dec(treasure,start);
 

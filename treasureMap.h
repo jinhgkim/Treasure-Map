@@ -79,8 +79,6 @@ public:
     // should be at the center of the square.
 	PNG renderMaze();
 
-    void Debug(PNG &im, pair<int, int> loc, int d);
-
 private:
     // tests next, a neighbor (adjacent vertex) of curr to see if it is 
     // 1. within the image, 2. unvisited, and 3. the same colour as curr in

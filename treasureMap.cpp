@@ -9,15 +9,10 @@ treasureMap::treasureMap(const PNG & baseim, const PNG & mazeim, pair<int,int> s
 }
 
 void treasureMap::setGrey(PNG & im, pair<int,int> loc){  
-    // RGBAPixel* pixel = im.getPixel(loc.first, loc.second);
-    // pixel->r = 2 * (pixel->r / 4);
-    // pixel->g = 2 * (pixel->g / 4);
-    // pixel->b = 2 * (pixel->b / 4);
-}
-
-void treasureMap::Debug(PNG &im, pair<int, int> loc, int d)
-{
-    setLOB(im, loc, d);
+    RGBAPixel* pixel = im.getPixel(loc.first, loc.second);
+    pixel->r = 2 * (pixel->r / 4);
+    pixel->g = 2 * (pixel->g / 4);
+    pixel->b = 2 * (pixel->b / 4);
 }
 
 void treasureMap::setLOB(PNG & im, pair<int,int> loc, int d){
@@ -26,8 +21,6 @@ void treasureMap::setLOB(PNG & im, pair<int,int> loc, int d){
     pixel->r = (pixel->r & 0xFC) | ((d >> 4) & 0x3);
     pixel->g = (pixel->g & 0xFC) | ((d >> 2) & 0x3);
     pixel->b = (pixel->b & 0xFC) | (d & 0x3);
-
-    // cout<< "pixel = "<< *pixel<<endl;
 }
 
 PNG treasureMap::renderMap(){
@@ -58,40 +51,45 @@ PNG treasureMap::renderMap(){
 }
 
 PNG treasureMap::renderMaze(){
+    PNG mazeMap = base;
+    vector<vector<bool>> visited(mazeMap.height(), vector<bool>(mazeMap.width()));
+    Queue<pair<int, int>> queue;
 
-    // // draw a red 7px x 7 px square
-    // int xStartPos = start.first;
-    // int yStartPos = start.second;
-    // for (int i = xStartPos + 1; i <= xStartPos + 3; i++)
-    // {
-    //     for (int j = yStartPos + 1; j <= yStartPos + 3; j++)
-    //     {
-    //         if(withinImg(make_pair(i,j))){
-    //             maze.getPixel(i, j)->r = 255;
-    //         }
-    //         if(withinImg(make_pair(i-4,j-4))){
-    //             maze.getPixel(i - 4, j - 4)->r = 255;
-    //         }
-    //     }
-    // }
-    // // find path and render maze map
-    // vector<vector<bool>> visited(maze.height(), vector<bool> (maze.width()));
+    // traverse mazeMap
+    visited[start.second][start.first] = true;
+    setGrey(mazeMap, start);
+    queue.enqueue(start);
 
-    // Queue<pair<int, int>> queue;
-    // queue.enqueue(start);
-    // while (!queue.isEmpty())
-    // {
-    //     auto curr = queue.dequeue();
-    //     auto adjPixels = neighbors(curr);
-    //     for (auto p : adjPixels)
-    //     {
-    //         if(good(visited,curr,p)){
-    //             setGrey(maze, p);
-    //             queue.enqueue(p);
-    //         }
-    //     }
-    // }
-    // return maze;
+    while ((!queue.isEmpty()))
+    {
+        auto curr = queue.dequeue();
+        for(auto p: neighbors(curr)){
+            if(good(visited,curr,p)){
+                visited[p.second][p.first] = true;
+                setGrey(mazeMap, p);
+                queue.enqueue(p);
+            }
+        }
+    }
+
+    // draw a red 7px x 7 px square
+    int xPos = start.first;
+    int yPos = start.second;
+    for (int y = yPos -3; y < yPos + 4; y++)
+    {
+        for (int x = xPos -3; x < xPos + 4; x++)
+        {
+            if (withinImg(make_pair(x, y)))
+            {
+                RGBAPixel *pixel = mazeMap.getPixel(x, y);
+                pixel->r = 255;
+                pixel->g = 0;
+                pixel->b = 0;
+            }
+        }
+    }
+
+    return mazeMap;
 }
 
 bool treasureMap::good(vector<vector<bool>> & v, pair<int,int> curr, pair<int,int> next){
